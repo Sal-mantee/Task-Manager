@@ -24,7 +24,7 @@
                 Console.WriteLine("\t1. Add\n\t2. Edit\n\t3. Delete\n\t4. Mark task as done\n\t5. Exit");
                 Console.Write("\n\tEnter your choice: ");
                 int choice;
-                while (!int.TryParse(Console.ReadLine(), out choice) || !(choice >= 0 && choice < 6))
+                while (!int.TryParse(Console.ReadLine(), out choice) || !(choice >= 0 && choice <= 5))
                     Console.Write("\tERROR!\n\tEnter a valid choice: ");
                 choice = choice_;
 
