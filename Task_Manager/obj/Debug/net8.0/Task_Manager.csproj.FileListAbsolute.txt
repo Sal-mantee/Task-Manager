@@ -1,0 +1,15 @@
+C:\Users\tello\source\repos\Git Projects\Task_Manager\obj\Debug\net8.0\Task_Manager.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\tello\source\repos\Git Projects\Task_Manager\obj\Debug\net8.0\Task_Manager.AssemblyInfoInputs.cache
+C:\Users\tello\source\repos\Git Projects\Task_Manager\obj\Debug\net8.0\Task_Manager.AssemblyInfo.cs
+C:\Users\tello\source\repos\Git Projects\Task_Manager\obj\Debug\net8.0\Task_Manager.csproj.CoreCompileInputs.cache
+C:\Users\tello\source\repos\Git Projects\Task_Manager\obj\Debug\net8.0\Task_Manager.sourcelink.json
+C:\Users\tello\source\repos\Git Projects\Task_Manager\bin\Debug\net8.0\Task_Manager.exe
+C:\Users\tello\source\repos\Git Projects\Task_Manager\bin\Debug\net8.0\Task_Manager.deps.json
+C:\Users\tello\source\repos\Git Projects\Task_Manager\bin\Debug\net8.0\Task_Manager.runtimeconfig.json
+C:\Users\tello\source\repos\Git Projects\Task_Manager\bin\Debug\net8.0\Task_Manager.dll
+C:\Users\tello\source\repos\Git Projects\Task_Manager\bin\Debug\net8.0\Task_Manager.pdb
+C:\Users\tello\source\repos\Git Projects\Task_Manager\obj\Debug\net8.0\Task_Manager.dll
+C:\Users\tello\source\repos\Git Projects\Task_Manager\obj\Debug\net8.0\refint\Task_Manager.dll
+C:\Users\tello\source\repos\Git Projects\Task_Manager\obj\Debug\net8.0\Task_Manager.pdb
+C:\Users\tello\source\repos\Git Projects\Task_Manager\obj\Debug\net8.0\Task_Manager.genruntimeconfig.cache
+C:\Users\tello\source\repos\Git Projects\Task_Manager\obj\Debug\net8.0\ref\Task_Manager.dll
