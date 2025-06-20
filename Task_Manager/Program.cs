@@ -7,11 +7,11 @@ namespace Task_Manager
 {
     internal class Program
     {
-        private const string fileName = "C:\\Users\\tello\\source\\repos\\Git Projects\\Task_Manager\\Tasks.txt";
+        private const string fileName = "C:\\Users\\tello\\source\\repos\\Git Projects\\Task_Manager\\Tasks.csv";
 
         static void Main(string[] args)
         {
-            Menue();
+            Menu();
             Console.WriteLine("\tPress any key to exit...");
             Console.ReadKey();
         }
@@ -22,78 +22,91 @@ namespace Task_Manager
          * Save/load tasks to a local file (JSON or XML).
          * Clean UI.*/
 
-        private static void Menue()
+        private static void Menu()
         {
+            TaskService service = new TaskService();
+            service.tasks = LoadTasksFromCSV();
             int choice_;
-            var tasks = new List<Task>();
+            
             do
             {
                 Console.Clear();
                 Console.WriteLine("\t==== Task Manager ===\n");
-                Console.WriteLine("\t1. Add\n\t2. Edit\n\t3. Delete\n\t4. Mark task as done\n\t5. Exit");
+                Console.WriteLine("\t1. Add\n\t2. Edit\n\t3. Delete\n\t4. Mark task as done\n\t5. View all tasks\n\t6. Exit");
                 Console.Write("\n\tEnter your choice: ");
                 int choice;
-                while (!int.TryParse(Console.ReadLine(), out choice) || !(choice >= 0 && choice <= 5))
+                while (!int.TryParse(Console.ReadLine(), out choice) || !(choice >= 0 && choice < 7))
                     Console.Write("\tERROR!\n\tEnter a valid choice: ");
                 choice_ = choice;
 
                 switch (choice)
                 {
                     case 1:
-                        AddTask(tasks);
+                        AddTask(service);
                         break;
                     case 2:
-                        EditTask(tasks);
+                        EditTask(service);
                         break;
                     case 3:
-                        DeleteTask(tasks);
+                        DeleteTask(service);
+                        break;
+                    case 4:
+                        MarkTaskAsDone(service);
+                        break;
+                    case 5:
+                        ViewAllTask(service);
                         break;
                 }
-                if (choice != 5)
+                SaveTasksToCSV(service.tasks);
+                if (choice != 6)
                 {
                     Console.WriteLine("\tPress any key to continue...");
                     Console.ReadKey();
                 }
             }
-            while (choice_ != 5);
+            while (choice_ != 6);
         }
         #region Add
-        private static void AddTask(List<Task> tasks)
+        private static void AddTask(TaskService service)
         {
             Console.Clear();
             Console.WriteLine("\t=== Adding Task ===\n");
 
             Console.Write("\tEnter a task name: ");
             string taskName = Console.ReadLine();
-            Console.Write("\tEnter a description of a task: ");
-            string taskDiscription = Console.ReadLine();
-            Task task = new Task(taskName, taskDiscription);
-            tasks.Add(task);
 
-            Console.WriteLine($"\tTask '{taskName}' added successfully.");
+            if (service.GetTask(taskName) == null)
+            {
+                Console.Write("\tEnter a description of a task: ");
+                string taskDescription = Console.ReadLine();
+                service.AddTask(taskName, taskDescription);
+                Console.WriteLine($"\tTask '{taskName}' added successfully.");
+            }
+            else
+                Console.WriteLine($"\tTask '{taskName}' cannot be added it already exists.");
         }
         #endregion
         #region Edit
-        private static void EditTask(List<Task> tasks)
+        private static void EditTask(TaskService service)
         {
-            Console.Clear();
-            Console.WriteLine("\t=== Editing Task ===\n");
-
-            Console.Write("\tEnter a task to edit: ");
-            string taskName = Console.ReadLine();
-
-            if (tasks.Count == 0)
+            if (service.tasks.Count == 0)
                 Console.WriteLine("\tAdd tasks first.");
             else
             {
-                var task = tasks.FirstOrDefault(task => task.TaskName == taskName);
+                Console.Clear();
+                Console.WriteLine("\t=== Editing Task ===\n");
 
-                if (task != null)
+                Console.Write("\tEnter a task to edit: ");
+                string taskName = Console.ReadLine();
+
+
+                if (service.GetTask(taskName) != null)
                 {
                     Console.Write($"\tUpdate name of the task named '{taskName}': ");
-                    task.TaskName = Console.ReadLine();
-                    Console.Write($"\n\tUpdate desciption of the task named '{taskName}': ");
-                    task.Description = Console.ReadLine();
+                    string newTaskName = Console.ReadLine();
+                    Console.Write($"\tUpdate desciption of the task named '{newTaskName}': ");
+                    string taskDescription = Console.ReadLine();
+                    service.Update(taskName, newTaskName, taskDescription);
                     Console.WriteLine("\tUpdated successfully.");
                 }
                 else
@@ -102,44 +115,112 @@ namespace Task_Manager
         }
         #endregion
         #region Delete
-        private static void DeleteTask(List<Task> tasks)
+        private static void DeleteTask(TaskService service)
         {
-            Console.Clear();
-            Console.WriteLine("\t=== Deleting Task ===\n");
-
-            Console.Write("\tEnter a task to delete: ");
-            string taskName = Console.ReadLine();
-
-            if (tasks.Count == 0)
+            if (service.tasks.Count == 0)
                 Console.WriteLine("\tAdd tasks first.");
-
-            var task = tasks.FirstOrDefault(task => task.TaskName == taskName);
-            if (task!= null)
-            {
-                tasks.Remove(task);
-                Console.WriteLine($"\tTask '{taskName}' deleted successfully.");
-            }
             else
-                Console.WriteLine($"\tTask '{taskName}' is not found.");
+            {
+                Console.Clear();
+                Console.WriteLine("\t=== Deleting Task ===\n");
+
+                Console.Write("\tEnter a task to delete: ");
+                string taskName = Console.ReadLine();
+                var task = service.GetTask(taskName);
+
+                if (task == null)
+                    Console.WriteLine($"\tTask '{taskName}' is not found.");
+                else
+                {
+                    service.Delete(taskName);
+                    Console.WriteLine($"\tTask '{taskName}' deleted successfully.");
+                }
+            }
         }
         #endregion
-        //private static List<Task> GetTasks()
-        //{
-        //    List<Task> tasks = new List<Task>();
+        #region Mark Task as Done
+        private static void MarkTaskAsDone(TaskService service)
+        {
+            if (service.tasks.Count == 0)
+                Console.WriteLine("\tAdd tasks first.");
+            else
+            {
+                Console.Clear();
+                Console.WriteLine("\t=== Marking Task as Done ===\n");
+                Console.Write("\tEnter a task to mark as done: ");
+                string taskName = Console.ReadLine();
 
-        //    if (!File.Exists(fileName))
-        //    {
-        //        using (StreamWriter writer = new StreamWriter(fileName, false))
-        //        {
-        //            writer.WriteLine("Read hardware");
-        //        }
-        //    }
+                var task = service.GetTask(taskName);
 
-        //    using (StreamReader reader = new StreamReader(fileName))
-        //    {
-        //        //tasks.Add(new Task(reader.ReadLine()[0], );
-        //    }
-        //    return tasks;
-        //}
+                if (task != null)
+                {
+                    task.Status = true;
+                    Console.WriteLine($"\tTask '{taskName}' marked as done successfully.");
+                }
+                else
+                    Console.WriteLine($"\tTask '{taskName}' is not found.");
+            }
+        }
+        #endregion
+        #region Helper Methods
+        private static Task GetTask(string taskName, List<Task> tasks)
+        {
+            return tasks.FirstOrDefault(task => task.TaskName.Equals(taskName, StringComparison.OrdinalIgnoreCase));
+        }
+        #endregion
+        #region View All Tasks
+        private static void ViewAllTask(TaskService service)
+        {
+            Console.Clear();
+            Console.WriteLine("\t=== All Tasks ===\n");
+            foreach (var task in service.tasks)
+                Console.WriteLine($"\t{task}");
+        }
+        #endregion
+        #region Load Tasks from CSV
+        private static List<Task> LoadTasksFromCSV()
+        {
+            List<Task> tasks = new List<Task>();
+
+            if (!File.Exists(fileName))
+            {
+                using (StreamWriter sw = File.CreateText(fileName))
+                {
+                    sw.WriteLine("Task Name,Description,Status");
+                }
+            }
+
+            string[] lines = File.ReadAllLines(fileName);
+            for (int i = 1; i < lines.Length; i++)//skip header
+            {
+                string[] parts = lines[i].Split(',');
+                if (parts.Length == 3)
+                {
+                    string taskName = parts[0].Trim();
+                    string description = parts[1].Trim();
+                    bool status = bool.Parse(parts[2].Trim());
+                    Task task = new Task(taskName, description, status);
+                    tasks.Add(task);
+                    Console.WriteLine("\tTask added successfully.");
+                }
+                else
+                    Console.WriteLine($"\tInvalid line format at line {i + 1}: {lines[i]}");
+            }
+            return tasks;
+        }
+        #endregion
+        // Note: You may want to implement saving tasks back to the CSV file when exiting the application.
+        // This can be done by iterating through the tasks list and writing each task to the file.
+        private static void SaveTasksToCSV(List<Task> tasks)
+        {
+            using (StreamWriter sw = new StreamWriter(fileName))
+            {
+                sw.WriteLine("Task Name,Description,Status");
+                foreach (var task in tasks)
+                {
+                    sw.WriteLine($"{task.TaskName},{task.Description},{task.Status}");
+                }
+            }
+        }
     }
 }
