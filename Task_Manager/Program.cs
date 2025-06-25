@@ -12,7 +12,7 @@ namespace Task_Manager
         static void Main(string[] args)
         {
             Menu();
-            Console.WriteLine("\tPress any key to exit...");
+            Console.WriteLine("\n\tPress any key to exit...");
             Console.ReadKey();
         }
 
@@ -21,7 +21,7 @@ namespace Task_Manager
          * Mark tasks as done.
          * Save/load tasks to a local file (JSON or XML).
          * Clean UI.*/
-
+        #region Menu
         private static void Menu()
         {
             TaskService service = new TaskService();
@@ -66,6 +66,7 @@ namespace Task_Manager
             }
             while (choice_ != 6);
         }
+        #endregion
         #region Add
         private static void AddTask(TaskService service)
         {
@@ -89,8 +90,9 @@ namespace Task_Manager
         #region Edit
         private static void EditTask(TaskService service)
         {
+            Console.Clear();
             if (service.tasks.Count == 0)
-                Console.WriteLine("\tAdd tasks first.");
+                Console.WriteLine("\tERROR\n\tNo tasks found... add them first.");
             else
             {
                 Console.Clear();
@@ -110,15 +112,16 @@ namespace Task_Manager
                     Console.WriteLine("\tUpdated successfully.");
                 }
                 else
-                    Console.WriteLine($"\tTask '{taskName} not found.'");
+                    Console.WriteLine($"\tTask '{taskName}' not found.");
             }
         }
         #endregion
         #region Delete
         private static void DeleteTask(TaskService service)
         {
+            Console.Clear();
             if (service.tasks.Count == 0)
-                Console.WriteLine("\tAdd tasks first.");
+                Console.WriteLine("\tERROR\n\tNo tasks found... add them first.");
             else
             {
                 Console.Clear();
@@ -141,8 +144,9 @@ namespace Task_Manager
         #region Mark Task as Done
         private static void MarkTaskAsDone(TaskService service)
         {
+            Console.Clear();
             if (service.tasks.Count == 0)
-                Console.WriteLine("\tAdd tasks first.");
+                Console.WriteLine("\tERROR\n\tNo tasks found... add them first.");
             else
             {
                 Console.Clear();
@@ -154,7 +158,7 @@ namespace Task_Manager
 
                 if (task != null)
                 {
-                    task.Status = true;
+                    service.MarkAsDone(taskName);
                     Console.WriteLine($"\tTask '{taskName}' marked as done successfully.");
                 }
                 else
@@ -162,19 +166,18 @@ namespace Task_Manager
             }
         }
         #endregion
-        #region Helper Methods
-        private static Task GetTask(string taskName, List<Task> tasks)
-        {
-            return tasks.FirstOrDefault(task => task.TaskName.Equals(taskName, StringComparison.OrdinalIgnoreCase));
-        }
-        #endregion
         #region View All Tasks
         private static void ViewAllTask(TaskService service)
         {
             Console.Clear();
-            Console.WriteLine("\t=== All Tasks ===\n");
-            foreach (var task in service.tasks)
-                Console.WriteLine($"\t{task}");
+            if (service.tasks.Count == 0)
+                Console.WriteLine("\tERROR\n\tNo tasks found... add them first.");
+            else
+            {
+                Console.WriteLine("\t=== All Tasks ===\n");
+                foreach (var task in service.tasks)
+                    Console.WriteLine($"\t{task}");
+            }
         }
         #endregion
         #region Load Tasks from CSV
@@ -209,6 +212,7 @@ namespace Task_Manager
             return tasks;
         }
         #endregion
+        #region Save
         // Note: You may want to implement saving tasks back to the CSV file when exiting the application.
         // This can be done by iterating through the tasks list and writing each task to the file.
         private static void SaveTasksToCSV(List<Task> tasks)
@@ -222,5 +226,6 @@ namespace Task_Manager
                 }
             }
         }
+        #endregion
     }
 }

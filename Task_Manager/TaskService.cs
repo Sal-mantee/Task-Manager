@@ -36,6 +36,6 @@ namespace Task_Manager
             task.Status = true;
         }
 
-        public Task GetTask(string taskName) => tasks.FirstOrDefault(tskName => tskName.TaskName.Equals(taskName));
+        public Task GetTask(string taskName) => tasks.FirstOrDefault(task => task.TaskName.Equals(taskName, StringComparison.OrdinalIgnoreCase));
     }
 }
