@@ -18,6 +18,6 @@ namespace Task_Manager
             Status = status;
         }
 
-        public override string ToString() => $"{TaskName}, {Description}, ({Status})";
+        public override string ToString() => $"{TaskName} | {Description.ToString().PadRight(25)} | ({Status})";
     }
 }

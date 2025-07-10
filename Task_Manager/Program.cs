@@ -60,7 +60,7 @@ namespace Task_Manager
                 SaveTasksToCSV(service.tasks);
                 if (choice != 6)
                 {
-                    Console.WriteLine("\tPress any key to continue...");
+                    Console.WriteLine("\n\tPress any key to continue...");
                     Console.ReadKey();
                 }
             }
